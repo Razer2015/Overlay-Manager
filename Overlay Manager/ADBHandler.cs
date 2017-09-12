@@ -1,5 +1,6 @@
 ﻿using Overlay_Manager.Models;
 using SharpAdbClient;
+using SharpAdbClient.DeviceCommands;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,50 +13,54 @@ namespace Overlay_Manager
 {
     class ADBHandler
     {
-        private AdbServer server = new AdbServer();
-        public List<DeviceData> devices;
-        public DeviceData device;
-        private DeviceMonitor monitor;
-        private ComboBox cBox_devices;
-        private Themes myThemes;
-        private Packages myPackages;
-        public ThemesHandler themesHandler;
-        public PackagesHandler packagesHandler;
+        private AdbServer Server = new AdbServer();
+        public List<DeviceData> Devices;
+        public DeviceData Device;
+        private DeviceMonitor Monitor;
+        private ComboBox CBox_devices;
+        private Themes MyThemes;
+        private Packages MyPackages;
+        public ThemesHandler ThemesHandler;
+        public PackagesHandler PackagesHandler;
         public string ADBPath;
 
-        public ADBHandler(string platformTools, Panel panel_base, ComboBox cBox_device, ComboBox packagesCbox) {
-            cBox_devices = cBox_device;
+        public ADBHandler(string platformTools, Panel panel_base, ComboBox cBox_device, ComboBox installPackages, ComboBox uninstallPackages) {
+            CBox_devices = cBox_device;
             ADBPath = Path.Combine(platformTools, "adb.exe");
-            var result = server.StartServer(Path.Combine(platformTools, "adb.exe"), restartServerIfNewer: false);
+            var result = Server.StartServer(Path.Combine(platformTools, "adb.exe"), restartServerIfNewer: false);
 
-            monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
-            monitor.DeviceConnected += this.OnDeviceConnected;
-            monitor.DeviceDisconnected += this.OnDeviceDisconnected;
-            monitor.Start();
+            Monitor = new DeviceMonitor(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)));
+            Monitor.DeviceConnected += this.OnDeviceConnected;
+            Monitor.DeviceDisconnected += this.OnDeviceDisconnected;
+            Monitor.Start();
 
-            GetDevices(cBox_devices);
+            GetDevices(CBox_devices);
 
-            themesHandler = new ThemesHandler(this, panel_base);
-            packagesHandler = new PackagesHandler(this, packagesCbox);
+            ThemesHandler = new ThemesHandler(this, panel_base);
+            PackagesHandler = new PackagesHandler(this, installPackages, uninstallPackages);
         }
 
+        public void RefreshData() {
+            this.GetThemes();
+            this.GetPackages();
+        }
 
         public void GetThemes() {
-            this.myThemes = new Themes(this.SendCommand("cmd overlay list --user 0"));
-            this.themesHandler.RefreshData(this.myThemes.themes);
+            this.MyThemes = new Themes(this.SendCommand("cmd overlay list --user 0"));
+            this.ThemesHandler.RefreshData(this.MyThemes.themes);
         }
 
         public void GetPackages() {
-            this.myPackages = new Packages(this.SendCommand("pm list packages -f"));
-            this.packagesHandler.RefreshData(this.myPackages.packages);
+            this.MyPackages = new Packages(this.SendCommand("pm list packages -f"));
+            this.PackagesHandler.RefreshData(this.MyPackages.packages);
         }
 
         #region Adb Calls
         public void GetDevices(ComboBox cBox_device) {
-            devices = AdbClient.Instance.GetDevices();
+            Devices = AdbClient.Instance.GetDevices();
 
             cBox_device.Items.Clear();
-            foreach (var device in this.devices) {
+            foreach (var device in this.Devices) {
                 cBox_device.Items.Add($"{device.Name} - {device.Model} - {device.Serial}");
                 Debug.WriteLine(device.Name);
             }
@@ -76,7 +81,7 @@ namespace Overlay_Manager
                 fileCreated = true;
             }
 
-            String command = $@"/C {adbPath} -s {this.device.Serial} install{((reinstall) ? " -r" : "")} {Path.GetFileName(packagePath)}";
+            String command = $@"/C {adbPath} -s {this.Device.Serial} install{((reinstall) ? " -r" : "")} {Path.GetFileName(packagePath)}";
             ProcessStartInfo cmdsi = new ProcessStartInfo("cmd.exe");
             cmdsi.UseShellExecute = false;
             cmdsi.RedirectStandardError = true;
@@ -97,10 +102,15 @@ namespace Overlay_Manager
             }
         }
 
+        public void UninstallPackage(string packageName) {
+            PackageManager manager = new PackageManager(this.Device);
+            manager.UninstallPackage(packageName);
+        }
+
         public void DownloadFile(string remoteFilePath, string output) {
             //var device = AdbClient.Instance.GetDevices().First();
 
-            using (SyncService service = new SyncService(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)), this.device))
+            using (SyncService service = new SyncService(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)), this.Device))
             using (Stream stream = File.OpenWrite(output)) {
                 service.Pull(remoteFilePath, stream, null, CancellationToken.None);
             }
@@ -109,7 +119,7 @@ namespace Overlay_Manager
         public void UploadFile(string input, string remotePath, int permissions) {
             //var device = AdbClient.Instance.GetDevices().First();
 
-            using (SyncService service = new SyncService(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)), this.device))
+            using (SyncService service = new SyncService(new AdbSocket(new IPEndPoint(IPAddress.Loopback, AdbClient.AdbServerPort)), this.Device))
             using (Stream stream = File.OpenRead(input)) {
                 service.Push(stream, remotePath, permissions, DateTime.Now, null, CancellationToken.None);
             }
@@ -119,7 +129,7 @@ namespace Overlay_Manager
             //var device = AdbClient.Instance.GetDevices().First();
             var receiver = new ConsoleOutputReceiver();
 
-            AdbClient.Instance.ExecuteRemoteCommand(command, this.device, receiver);
+            AdbClient.Instance.ExecuteRemoteCommand(command, this.Device, receiver);
 
             Debug.WriteLine("The device responded:");
             Debug.WriteLine(receiver.ToString());
@@ -129,18 +139,18 @@ namespace Overlay_Manager
 
         #region Adb Events
         void OnDeviceConnected(object sender, DeviceDataEventArgs e) {
-            if (cBox_devices.InvokeRequired) {
-                cBox_devices.Invoke(new Action(() => GetDevices(cBox_devices)));
+            if (CBox_devices.InvokeRequired) {
+                CBox_devices.Invoke(new Action(() => GetDevices(CBox_devices)));
             } else {
-                GetDevices(cBox_devices);
+                GetDevices(CBox_devices);
             }
             Debug.WriteLine($"The device {e.Device.Name} has connected to this PC");
         }
         void OnDeviceDisconnected(object sender, DeviceDataEventArgs e) {
-            if (cBox_devices.InvokeRequired) {
-                cBox_devices.Invoke(new Action(() => GetDevices(cBox_devices)));
+            if (CBox_devices.InvokeRequired) {
+                CBox_devices.Invoke(new Action(() => GetDevices(CBox_devices)));
             } else {
-                GetDevices(cBox_devices);
+                GetDevices(CBox_devices);
             }
             Debug.WriteLine($"The device {e.Device.Name} has disconnected from this PC");
         }

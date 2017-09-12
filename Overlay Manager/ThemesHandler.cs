@@ -11,20 +11,20 @@ namespace Overlay_Manager
 {
     class ThemesHandler
     {
-        private ADBHandler adbHandler;
-        private Panel parentPanel;
+        private ADBHandler AdbHandler;
+        private Panel ParentPanel;
 
         public ThemesHandler(ADBHandler adbHandler, Panel parentPanel) {
-            this.adbHandler = adbHandler;
-            this.parentPanel = parentPanel;
+            this.AdbHandler = adbHandler;
+            this.ParentPanel = parentPanel;
         }
 
         public void RefreshData(Theme[] themes) {
             var results = themes.GroupBy(x => x.targetPackage);
-            parentPanel.Controls.Clear();
+            ParentPanel.Controls.Clear();
             foreach (var target in results) {
-                parentPanel.Controls.Add(CreateNewTarget(target.ToArray()));
-                parentPanel.Controls[parentPanel.Controls.Count - 1].BringToFront();
+                ParentPanel.Controls.Add(CreateNewTarget(target.ToArray()));
+                ParentPanel.Controls[ParentPanel.Controls.Count - 1].BringToFront();
             }
         }
 
@@ -91,12 +91,12 @@ namespace Overlay_Manager
             }
 
             if(e.NewValue == CheckState.Checked) {
-                adbHandler.SendCommand($"cmd overlay enable --user 0 {((CheckedListBox)sender).Items[e.Index].ToString()}");
-                adbHandler.GetThemes();
+                AdbHandler.SendCommand($"cmd overlay enable --user 0 {((CheckedListBox)sender).Items[e.Index].ToString()}");
+                AdbHandler.GetThemes();
             }
             else if (e.NewValue == CheckState.Unchecked) {
-                adbHandler.SendCommand($"cmd overlay disable --user 0 {((CheckedListBox)sender).Items[e.Index].ToString()}");
-                adbHandler.GetThemes();
+                AdbHandler.SendCommand($"cmd overlay disable --user 0 {((CheckedListBox)sender).Items[e.Index].ToString()}");
+                AdbHandler.GetThemes();
             }
         }
     }

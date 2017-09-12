@@ -41,10 +41,13 @@
             this.gBox_installPackage = new System.Windows.Forms.GroupBox();
             this.cBox_reinstall = new System.Windows.Forms.CheckBox();
             this.btn_browse = new System.Windows.Forms.Button();
+            this.lbl_draganddrop = new System.Windows.Forms.Label();
+            this.gBox_uninstallPackage = new System.Windows.Forms.GroupBox();
+            this.btn_uninstallPackage = new System.Windows.Forms.Button();
+            this.cBox_uninstallPackage = new System.Windows.Forms.ComboBox();
             this.gBox_downloadPackage = new System.Windows.Forms.GroupBox();
             this.btn_downloadPackage = new System.Windows.Forms.Button();
             this.cBox_installedPackages = new System.Windows.Forms.ComboBox();
-            this.lbl_draganddrop = new System.Windows.Forms.Label();
             this.gBox_settings.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.gBox_installedOverlays.SuspendLayout();
@@ -52,6 +55,7 @@
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.gBox_installPackage.SuspendLayout();
+            this.gBox_uninstallPackage.SuspendLayout();
             this.gBox_downloadPackage.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -183,6 +187,7 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.gBox_installPackage);
+            this.tabPage2.Controls.Add(this.gBox_uninstallPackage);
             this.tabPage2.Controls.Add(this.gBox_downloadPackage);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -198,9 +203,9 @@
             this.gBox_installPackage.Controls.Add(this.btn_browse);
             this.gBox_installPackage.Controls.Add(this.lbl_draganddrop);
             this.gBox_installPackage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gBox_installPackage.Location = new System.Drawing.Point(3, 74);
+            this.gBox_installPackage.Location = new System.Drawing.Point(3, 145);
             this.gBox_installPackage.Name = "gBox_installPackage";
-            this.gBox_installPackage.Size = new System.Drawing.Size(832, 301);
+            this.gBox_installPackage.Size = new System.Drawing.Size(832, 230);
             this.gBox_installPackage.TabIndex = 1;
             this.gBox_installPackage.TabStop = false;
             this.gBox_installPackage.Text = "Install Package";
@@ -229,6 +234,51 @@
             this.btn_browse.Visible = false;
             this.btn_browse.Click += new System.EventHandler(this.btn_browse_Click);
             // 
+            // lbl_draganddrop
+            // 
+            this.lbl_draganddrop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbl_draganddrop.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_draganddrop.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.lbl_draganddrop.Location = new System.Drawing.Point(3, 16);
+            this.lbl_draganddrop.Name = "lbl_draganddrop";
+            this.lbl_draganddrop.Size = new System.Drawing.Size(826, 211);
+            this.lbl_draganddrop.TabIndex = 4;
+            this.lbl_draganddrop.Text = "Drag and Drop - Here";
+            this.lbl_draganddrop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // gBox_uninstallPackage
+            // 
+            this.gBox_uninstallPackage.Controls.Add(this.btn_uninstallPackage);
+            this.gBox_uninstallPackage.Controls.Add(this.cBox_uninstallPackage);
+            this.gBox_uninstallPackage.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gBox_uninstallPackage.Location = new System.Drawing.Point(3, 74);
+            this.gBox_uninstallPackage.Name = "gBox_uninstallPackage";
+            this.gBox_uninstallPackage.Size = new System.Drawing.Size(832, 71);
+            this.gBox_uninstallPackage.TabIndex = 2;
+            this.gBox_uninstallPackage.TabStop = false;
+            this.gBox_uninstallPackage.Text = "Uninstall Package";
+            // 
+            // btn_uninstallPackage
+            // 
+            this.btn_uninstallPackage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_uninstallPackage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_uninstallPackage.Location = new System.Drawing.Point(3, 37);
+            this.btn_uninstallPackage.Name = "btn_uninstallPackage";
+            this.btn_uninstallPackage.Size = new System.Drawing.Size(826, 31);
+            this.btn_uninstallPackage.TabIndex = 1;
+            this.btn_uninstallPackage.Text = "Uninstall the selected package";
+            this.btn_uninstallPackage.UseVisualStyleBackColor = true;
+            this.btn_uninstallPackage.Click += new System.EventHandler(this.btn_uninstallPackage_Click);
+            // 
+            // cBox_uninstallPackage
+            // 
+            this.cBox_uninstallPackage.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cBox_uninstallPackage.FormattingEnabled = true;
+            this.cBox_uninstallPackage.Location = new System.Drawing.Point(3, 16);
+            this.cBox_uninstallPackage.Name = "cBox_uninstallPackage";
+            this.cBox_uninstallPackage.Size = new System.Drawing.Size(826, 21);
+            this.cBox_uninstallPackage.TabIndex = 0;
+            // 
             // gBox_downloadPackage
             // 
             this.gBox_downloadPackage.Controls.Add(this.btn_downloadPackage);
@@ -243,13 +293,13 @@
             // 
             // btn_downloadPackage
             // 
-            this.btn_downloadPackage.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btn_downloadPackage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btn_downloadPackage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_downloadPackage.Location = new System.Drawing.Point(3, 37);
             this.btn_downloadPackage.Name = "btn_downloadPackage";
-            this.btn_downloadPackage.Size = new System.Drawing.Size(826, 23);
+            this.btn_downloadPackage.Size = new System.Drawing.Size(826, 31);
             this.btn_downloadPackage.TabIndex = 1;
-            this.btn_downloadPackage.Text = "Download";
+            this.btn_downloadPackage.Text = "Download the selected package";
             this.btn_downloadPackage.UseVisualStyleBackColor = true;
             this.btn_downloadPackage.Click += new System.EventHandler(this.btn_downloadPackage_Click);
             // 
@@ -262,18 +312,6 @@
             this.cBox_installedPackages.Size = new System.Drawing.Size(826, 21);
             this.cBox_installedPackages.TabIndex = 0;
             // 
-            // lbl_draganddrop
-            // 
-            this.lbl_draganddrop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_draganddrop.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_draganddrop.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.lbl_draganddrop.Location = new System.Drawing.Point(3, 16);
-            this.lbl_draganddrop.Name = "lbl_draganddrop";
-            this.lbl_draganddrop.Size = new System.Drawing.Size(826, 282);
-            this.lbl_draganddrop.TabIndex = 4;
-            this.lbl_draganddrop.Text = "Drag and Drop - Here";
-            this.lbl_draganddrop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -283,6 +321,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.gBox_settings);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Overlay Manager - Alpha - by xfileFIN/Razerman";
@@ -296,6 +335,7 @@
             this.tabPage2.ResumeLayout(false);
             this.gBox_installPackage.ResumeLayout(false);
             this.gBox_installPackage.PerformLayout();
+            this.gBox_uninstallPackage.ResumeLayout(false);
             this.gBox_downloadPackage.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -324,6 +364,9 @@
         private System.Windows.Forms.Button btn_browse;
         private System.Windows.Forms.CheckBox cBox_reinstall;
         private System.Windows.Forms.Label lbl_draganddrop;
+        private System.Windows.Forms.GroupBox gBox_uninstallPackage;
+        private System.Windows.Forms.Button btn_uninstallPackage;
+        private System.Windows.Forms.ComboBox cBox_uninstallPackage;
     }
 }
 
